@@ -8,7 +8,7 @@
         class="w-full text-center mb-12"
         :class="{ 'text-white': getColourTheme, 'text-black': !getColourTheme }"
       >
-        for those who,
+        for those who
         <span class="italic font-medium text-normal">really</span> care about TV
         ratings.
       </h1>
