@@ -48,7 +48,7 @@
         ></line-chart>
       </div>
       <div
-        class="col-span-8 row-span-2 ml-16"
+        class="col-span-8 row-span-4 ml-16 mt-6"
         :class="{ 'text-white': getColourTheme, 'text-black': !getColourTheme }"
       >
         <div class="flex">
@@ -65,13 +65,13 @@
             :src="getEpisodePosterURL"
             alt
           />
-          <div class="ml-6 mt-4">
+          <div class="ml-6">
             <h1 class="text-4xl tracking-wide font-bold mb-2">{{ getShowTitle }}</h1>
             <div class="flex flex-wrap items-center">
               <h1 class="text-base tracking-wide font-bold">{{ getShowGenre }} &#8226;</h1>
               <h1 class="text-base tracking-wide font-bold ml-2">{{ getShowRuntime }} &#8226;</h1>
               <h1 class="text-base tracking-wide font-bold ml-2">{{ getShowYear | moment('YYYY') }}</h1>
-              <p class="mt-2 w-full">{{getShowOverview}}</p>
+              <p class="mt-6 w-full">{{getShowOverview}}</p>
             </div>
           </div>
         </div>
