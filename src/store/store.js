@@ -161,7 +161,7 @@ export const store = new Vuex.Store({
     loadData({ commit }, input) {
       this.state.episodes = [];
       this.state.episodeRatings = [];
-      Axios.get(`http://www.omdbapi.com/?t=${input}&apikey=e019e030`).then(
+      Axios.get(`https://www.omdbapi.com/?t=${input}&apikey=e019e030`).then(
         (res) => {
           let Id = res.data.imdbID;
           commit("setShowTitle", res.data.Title);
@@ -170,7 +170,7 @@ export const store = new Vuex.Store({
           commit("setShowYear", res.data.Released);
           commit("setShowOverview", res.data.Plot);
           Axios.get(
-            `http://www.omdbapi.com/?t=${res.data.imdbID}&Season=${this.state.currentSeason}&apikey=e019e030`
+            `https://www.omdbapi.com/?t=${res.data.imdbID}&Season=${this.state.currentSeason}&apikey=e019e030`
           ).then((res) => {
             res.data.Episodes.forEach((episode) => {
               let arr = [
@@ -184,7 +184,7 @@ export const store = new Vuex.Store({
           });
 
           Axios.get(
-            `http://img.omdbapi.com/?i=${Id}&h=600&apikey=e019e030`
+            `https://img.omdbapi.com/?i=${Id}&h=600&apikey=e019e030`
           ).then((res) => {
             commit("setEpisodePosterURL", res.config.url);
           });
