@@ -67,11 +67,11 @@
           />
           <div class="ml-6 mt-4">
             <h1 class="text-4xl tracking-wide font-bold mb-2">{{ getShowTitle }}</h1>
-            <div class="flex flex-wrap items-center w-full">
+            <div class="flex flex-wrap items-center">
               <h1 class="text-base tracking-wide font-bold">{{ getShowGenre }} &#8226;</h1>
               <h1 class="text-base tracking-wide font-bold ml-2">{{ getShowRuntime }} &#8226;</h1>
               <h1 class="text-base tracking-wide font-bold ml-2">{{ getShowYear | moment('YYYY') }}</h1>
-              <p class="mt-2">{{getShowOverview}}</p>
+              <p class="mt-2 w-full">{{getShowOverview}}</p>
             </div>
           </div>
         </div>
