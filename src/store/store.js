@@ -1,90 +1,195 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import Axios from "axios";
-/* import Axios from "axios";
- */
+
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
   state: {
-    searchResults: [],
-    numberOfSeasons: 1,
-    numberOfEpisodes: [],
+    searchValue: null,
+    darkMode: true,
     currentSeason: 1,
-    currentShow: {},
-    chartOptions: {
-      chart: {
-        height: 350,
-        type: "line",
-      },
-      stroke: {
-        curve: "smooth",
-      },
-      markers: {
-        size: 1,
-        shape: "circle",
-      },
-      xaxis: {
-        categories: [],
+    episodeRatings: [],
+    episodes: [],
+    EpisodePosterURL: null,
+    totalSeasons: null,
+    Title: null,
+    Genre: null,
+    Runtime: null,
+    Year: null,
+    Overview: null,
+    LineColor: ["#FFF"],
+    datasets: {
+      borderColor: "white",
+      pointBackgroundColor: "white",
+      pointBorderColor: "white",
+    },
+    ChartColorTheme: {
+      options: {
+        responsive: true,
+        scales: {
+          xAxes: [
+            {
+              ticks: {
+                fontColor: "#FFF", // this here
+              },
+              gridLines: {
+                zeroLineColor: "#FFF",
+              },
+            },
+          ],
+          yAxes: [
+            {
+              gridLines: {
+                color: "#FFF",
+                zeroLineColor: "#FFF",
+              },
+              ticks: {
+                display: true,
+                fontColor: "#FFF",
+              },
+            },
+          ],
+        },
       },
     },
-    chartSeries: [
-      {
-        data: [],
-      },
-    ],
   },
   mutations: {
-    setSearchResults(state, results) {
-      state.searchResults = results;
+    setColourTheme(state, status) {
+      state.darkMode = status;
     },
-    setNumberOfSeasons(state, seasons) {
-      state.numberOfSeasons = seasons;
+    setSearchValue(state, value) {
+      state.searchValue = value;
     },
-    setCurrentShow(state, show) {
-      state.currentShow = show;
+    setEpisodeRatings(state, ratings) {
+      state.episodeRatings.push(ratings);
     },
-    setNumberOfEpisodes(state, episodes) {
-      state.numberOfEpisodes = episodes;
+    setChartColorTheme(state, colorCode) {
+      /* xAxes color */
+      state.ChartColorTheme.options.scales.xAxes[0].ticks.fontColor = colorCode;
+      state.ChartColorTheme.options.scales.xAxes[0].gridLines.zeroLineColor = colorCode;
+      /* yAxes color */
+      state.ChartColorTheme.options.scales.yAxes[0].gridLines.color = colorCode;
+      state.ChartColorTheme.options.scales.yAxes[0].gridLines.zeroLineColor = colorCode;
+      state.ChartColorTheme.options.scales.yAxes[0].ticks.fontColor = colorCode;
     },
-    setChartOptions(state, options) {
-      state.chartOptions.xaxis.categories = options;
+    setChartDatasets(state, color) {
+      state.datasets.borderColor = color;
+      state.datasets.pointBorderColor = color;
+      state.datasets.pointBackgroundColor = color;
     },
-    setChartSeries(state, series) {
-      state.chartSeries[0].data = series;
+    setEpisodes(state, episodeArray) {
+      state.episodes = [];
+      state.episodes = episodeArray;
+    },
+    setEpisodePosterURL(state, URL) {
+      state.EpisodePosterURL = URL;
+    },
+    setShowTitle(state, title) {
+      state.Title = title;
+    },
+    setShowGenre(state, genre) {
+      state.Genre = genre;
+    },
+    setShowRuntime(state, runtime) {
+      state.Runtime = runtime;
+    },
+    setShowYear(state, year) {
+      state.Year = year;
+    },
+    setShowOverview(state, overview) {
+      state.Overview = overview;
+    },
+    incrementSeason(state) {
+      state.currentSeason++;
+    },
+    decrementSeason(state) {
+      state.currentSeason--;
+    },
+    setTotalSeasons(state, total) {
+      state.totalSeasons = total;
     },
   },
   getters: {
+    getColourTheme(state) {
+      return state.darkMode;
+    },
+    getSearchValue(state) {
+      return state.searchValue;
+    },
+    getEpisodeRatings(state) {
+      return state.episodeRatings;
+    },
+    getChartColorTheme(state) {
+      return state.ChartColorTheme.options;
+    },
+    getColorLine(state) {
+      return state.LineColor;
+    },
+    getChartDatasets(state) {
+      return state.datasets;
+    },
+    getCurrentSeason(state) {
+      return state.currentSeason;
+    },
     getEpisodes(state) {
       return state.episodes;
     },
-    getChartOptions(state) {
-      return state.chartOptions;
+    getEpisodePosterURL(state) {
+      return state.EpisodePosterURL;
     },
-    getChartSeries(state) {
-      return state.chartSeries;
+    getShowTitle(state) {
+      return state.Title;
+    },
+    getShowGenre(state) {
+      return state.Genre;
+    },
+    getShowRuntime(state) {
+      return state.Runtime;
+    },
+    getShowYear(state) {
+      return state.Year;
+    },
+    getShowOverview(state) {
+      return state.Overview;
+    },
+    getTotalSeasons(state) {
+      return state.totalSeasons;
     },
   },
-
   actions: {
-    getSelectedShowData({ commit }, selectedShow) {
-      commit("setCurrentShow", selectedShow);
-      Axios.get(
-        `https://api.themoviedb.org/3/tv/${selectedShow.id}?api_key=59bda62ded2729b78f8c16ed9bfd9896&language=en-US`
-      ).then((res) => {
-        commit("setNumberOfSeasons", res.data.number_of_seasons);
-        Axios.get(
-          `https://api.themoviedb.org/3/tv/${this.state.currentShow.id}/season/${this.state.currentSeason}?api_key=59bda62ded2729b78f8c16ed9bfd9896&language=en-US`
-        ).then((res) => {
-          commit("setNumberOfEpisodes", res.data.episodes);
-          let options = res.data.episodes.map(
-            (episode) => episode.episode_number
-          );
-          let series = res.data.episodes.map((episode) => episode.vote_average);
-          commit("setChartOptions", options);
-          commit("setChartSeries", series);
-        });
-      });
+    loadData({ commit }, input) {
+      this.state.episodes = [];
+      this.state.episodeRatings = [];
+      Axios.get(`http://www.omdbapi.com/?t=${input}&apikey=e019e030`).then(
+        (res) => {
+          let Id = res.data.imdbID;
+          commit("setShowTitle", res.data.Title);
+          commit("setShowGenre", res.data.Genre);
+          commit("setShowRuntime", res.data.Runtime);
+          commit("setShowYear", res.data.Released);
+          commit("setShowOverview", res.data.Plot);
+          Axios.get(
+            `http://www.omdbapi.com/?t=${res.data.imdbID}&Season=${this.state.currentSeason}&apikey=e019e030`
+          ).then((res) => {
+            res.data.Episodes.forEach((episode) => {
+              let arr = [
+                "Ep." + " " + episode.Episode,
+                parseFloat(episode.imdbRating),
+              ];
+              commit("setEpisodeRatings", arr);
+              commit("setEpisodes", res.data.Episodes);
+              commit("setTotalSeasons", res.data.totalSeasons);
+            });
+          });
+
+          Axios.get(
+            `http://img.omdbapi.com/?i=${Id}&h=600&apikey=e019e030`
+          ).then((res) => {
+            commit("setEpisodePosterURL", res.config.url);
+          });
+        }
+      );
     },
   },
 });

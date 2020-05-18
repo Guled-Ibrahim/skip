@@ -3,11 +3,12 @@ import App from "./App.vue";
 import VueRouter from "vue-router";
 import Routes from "./routes";
 import { store } from "./store/store";
-import VueApexCharts from "vue-apexcharts";
+import Chartkick from "vue-chartkick";
+import Chart from "chart.js";
 
 Vue.use(VueRouter);
 Vue.use(require("vue-moment"));
-Vue.use(VueApexCharts);
+Vue.use(Chartkick.use(Chart));
 
 const router = new VueRouter({
   routes: Routes,
@@ -15,8 +16,6 @@ const router = new VueRouter({
 });
 
 Vue.config.productionTip = false;
-
-Vue.component("apexchart", VueApexCharts);
 
 new Vue({
   render: (h) => h(App),
