@@ -53,6 +53,7 @@ export const store = new Vuex.Store({
         },
       },
     },
+    searchResults: [],
   },
   mutations: {
     setColourTheme(state, status) {
@@ -109,6 +110,9 @@ export const store = new Vuex.Store({
     setTotalSeasons(state, total) {
       state.totalSeasons = total;
     },
+    setsearchResults(state, results) {
+      state.searchResults = results;
+    },
   },
   getters: {
     getColourTheme(state) {
@@ -156,6 +160,10 @@ export const store = new Vuex.Store({
     getTotalSeasons(state) {
       return state.totalSeasons;
     },
+
+    getsearchResults(state) {
+      return state.searchResults;
+    },
   },
   actions: {
     loadData({ commit }, input) {
@@ -190,6 +198,17 @@ export const store = new Vuex.Store({
           });
         }
       );
+    },
+    loadSearchResults({ commit }, searchValue) {
+      Axios.get(
+        `https://api.themoviedb.org/3/search/tv?api_key=59bda62ded2729b78f8c16ed9bfd9896&language=en-US&page=1&query=${searchValue}&include_adult=false`
+      ).then((res) => {
+        let topResults = [];
+        res.data.results.forEach((result, index) => {
+          if (index <= 3) topResults.push(result);
+        });
+        commit("setsearchResults", topResults);
+      });
     },
   },
 });

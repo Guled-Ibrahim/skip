@@ -3,8 +3,8 @@
     <div
       class="flex justify-between py-6 flex items-center select-none"
       :class="{
-        'bg-gray-900 text-white': getColourTheme,
-        'bg-gray-300 text-black': !getColourTheme,
+        'bg-gray-900 text-white transition-all ease-in duration-75': getColourTheme,
+        'bg-gray-200 text-black transition-all ease-in duration-75': !getColourTheme,
       }"
     >
       <router-link to="/">
@@ -31,7 +31,7 @@
       </svg>
       <!-- dark mode is OFF icon -->
       <svg
-        class="fill-current h-6 w-6 mr-16"
+        class="fill-current h-6 w-6 mr-16 transition duration-500 transform"
         viewBox="0 0 20 20"
         v-show="!getColourTheme"
         @click="darkModeOn"
