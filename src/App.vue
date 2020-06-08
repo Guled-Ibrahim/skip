@@ -35,6 +35,7 @@
           d="M13.719 1.8A8.759 8.759 0 111.8 13.719c3.335 1.867 7.633 1.387 10.469-1.449 2.837-2.837 3.318-7.134 1.45-10.47z"
         />
       </svg>
+
       <!-- dark mode is OFF icon -->
       <svg
         class="fill-current h-6 w-6 mr-16 transition duration-500 transform"
@@ -47,7 +48,9 @@
         />
       </svg>
     </div>
-    <router-view></router-view>
+    <transition name="fade" mode="out-in">
+      <router-view></router-view>
+    </transition>
   </div>
 </template>
 
@@ -73,9 +76,18 @@ export default {
 };
 </script>
 
-<style src="../src/build.css">
+<style>
 @import url("https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap");
 .brand-text {
   font-family: "Fjalla One", sans-serif;
+}
+.content-wrapper {
+  transition: background-color 0.25s;
+}
+.fade-enter {
+  opacity: 0;
+}
+.fade-enter-active {
+  transition: opacity 2s ease-out;
 }
 </style>

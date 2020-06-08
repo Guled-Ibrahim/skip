@@ -35,7 +35,7 @@ export const store = new Vuex.Store({
                 fontColor: "#FFF", // this here
               },
               gridLines: {
-                zeroLineColor: "#FFF",
+                color: "#FFF",
               },
             },
           ],

@@ -36,20 +36,21 @@
           </svg>
         </div>
       </div>
-      <div class="col-span-12 row-span-3 ml-12 mr-12">
-        <line-chart
-          :messages="{empty: 'No data'}"
-          :min="0"
-          :max="10"
-          height="100%"
-          :discrete="true"
-          :data="getShowRatings"
-          :colors="['#FFF']"
-          :curve="true"
-          :dataset="getChartDatasets"
-          :library="getChartColorTheme"
-        ></line-chart>
-      </div>
+      <transition name="fade">
+        <div class="col-span-12 row-span-3 ml-12 mr-12">
+          <line-chart
+            :min="0"
+            :max="10"
+            height="100%"
+            :discrete="true"
+            :data="getShowRatings"
+            :colors="['#FFF']"
+            :curve="true"
+            :dataset="getChartDatasets"
+            :library="getChartColorTheme"
+          ></line-chart>
+        </div>
+      </transition>
       <div
         class="col-span-8 row-span-4 ml-16 mt-6"
         :class="{ 'text-white': getColourTheme, 'text-black': !getColourTheme }"
@@ -61,12 +62,14 @@
             src="https://disc5.hdstream.download/assets/lp02/img/no_poster.jpg"
             alt
           />
-          <img
-            v-show="getEpisodePosterURL !== null"
-            class="object-fit h-48 w-32 rounded mt-2 ml-2 shadow-xl"
-            :src="'http://image.tmdb.org/t/p/w185/'+getEpisodePosterURL"
-            alt
-          />
+          <transition name="fade">
+            <img
+              v-show="getEpisodePosterURL !== null"
+              class="object-fit h-48 w-32 rounded mt-2 ml-2 shadow-xl"
+              :src="'http://image.tmdb.org/t/p/w185/'+getEpisodePosterURL"
+              alt
+            />
+          </transition>
           <div class="ml-6">
             <h1 class="text-4xl tracking-wide font-bold mb-2">{{ getShowTitle }}</h1>
             <div class="flex flex-wrap items-center">
