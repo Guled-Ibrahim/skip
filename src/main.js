@@ -5,12 +5,10 @@ import Routes from "./routes";
 import { store } from "./store/store";
 import Chartkick from "vue-chartkick";
 import Chart from "chart.js";
-import Animate from "animate.css";
 
 Vue.use(VueRouter);
 Vue.use(require("vue-moment"));
 Vue.use(Chartkick.use(Chart));
-Vue.use(Animate);
 
 const router = new VueRouter({
   routes: Routes,

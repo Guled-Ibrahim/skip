@@ -1,5 +1,8 @@
 <template>
-  <div class="h-screen" :class="{ 'bg-gray-900': getColourTheme, 'bg-gray-300': !getColourTheme }">
+  <div
+    class="h-screen"
+    :class="{ 'bg-gray-900 content-wrapper': getColourTheme, 'bg-gray-200 content-wrapper': !getColourTheme }"
+  >
     <div
       class="grid grid-cols-12 grid-rows-6 row-gap-6"
       :class="{ 'text-white': getColourTheme, 'text-black': !getColourTheme }"
@@ -35,7 +38,7 @@
       </div>
       <div class="col-span-12 row-span-3 ml-12 mr-12">
         <line-chart
-          v-show="getShowRatings.length > 0"
+          :messages="{empty: 'No data'}"
           :min="0"
           :max="10"
           height="100%"
@@ -58,11 +61,10 @@
             src="https://disc5.hdstream.download/assets/lp02/img/no_poster.jpg"
             alt
           />
-
           <img
             v-show="getEpisodePosterURL !== null"
             class="object-fit h-48 w-32 rounded mt-2 ml-2 shadow-xl"
-            :src="getEpisodePosterURL"
+            :src="'http://image.tmdb.org/t/p/w185/'+getEpisodePosterURL"
             alt
           />
           <div class="ml-6">
@@ -84,15 +86,17 @@
 export default {
   methods: {
     incrementSeason() {
+      console.log(this.$store.getters.getSearchValue);
       if (this.getCurrentSeason <= this.getTotalSeasons - 1) {
         this.$store.commit("incrementSeason");
-        this.$store.dispatch("loadData", this.$store.getters.getSearchValue);
+        this.$store.dispatch("loadData", this.$store.getters.gettmdbId);
       }
     },
     decrementSeason() {
+      console.log(this.$store.getters.getSearchValue);
       if (this.getCurrentSeason >= 2) {
         this.$store.commit("decrementSeason");
-        this.$store.dispatch("loadData", this.$store.getters.getSearchValue);
+        this.$store.dispatch("loadData", this.$store.getters.gettmdbId);
       }
     }
   },

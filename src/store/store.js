@@ -6,10 +6,11 @@ Vue.use(Vuex);
 
 export const store = new Vuex.Store({
   state: {
+    tmdbId: null,
     searchValue: null,
     darkMode: true,
     currentSeason: 1,
-    episodeRatings: [],
+    episodeRatings: {},
     episodes: [],
     EpisodePosterURL: null,
     totalSeasons: null,
@@ -63,7 +64,9 @@ export const store = new Vuex.Store({
       state.searchValue = value;
     },
     setEpisodeRatings(state, ratings) {
-      state.episodeRatings.push(ratings);
+      /*       state.episodeRatings.push(ratings);
+       */
+      state.episodeRatings = ratings;
     },
     setChartColorTheme(state, colorCode) {
       /* xAxes color */
@@ -112,6 +115,9 @@ export const store = new Vuex.Store({
     },
     setsearchResults(state, results) {
       state.searchResults = results;
+    },
+    settmdbId(state, id) {
+      state.tmdbId = id;
     },
   },
   getters: {
@@ -164,40 +170,38 @@ export const store = new Vuex.Store({
     getsearchResults(state) {
       return state.searchResults;
     },
+    gettmdbId(state) {
+      return state.tmdbId;
+    },
   },
   actions: {
-    loadData({ commit }, input) {
+    async loadData({ commit }, input) {
       this.state.episodes = [];
       this.state.episodeRatings = [];
-      Axios.get(`https://www.omdbapi.com/?t=${input}&apikey=e019e030`).then(
-        (res) => {
-          let Id = res.data.imdbID;
-          commit("setShowTitle", res.data.Title);
-          commit("setShowGenre", res.data.Genre);
-          commit("setShowRuntime", res.data.Runtime);
-          commit("setShowYear", res.data.Released);
-          commit("setShowOverview", res.data.Plot);
-          Axios.get(
-            `https://www.omdbapi.com/?t=${res.data.imdbID}&Season=${this.state.currentSeason}&apikey=e019e030`
-          ).then((res) => {
-            res.data.Episodes.forEach((episode) => {
-              let arr = [
-                "Ep." + " " + episode.Episode,
-                parseFloat(episode.imdbRating),
-              ];
-              commit("setEpisodeRatings", arr);
-              commit("setEpisodes", res.data.Episodes);
-              commit("setTotalSeasons", res.data.totalSeasons);
-            });
-          });
-
-          Axios.get(
-            `https://img.omdbapi.com/?i=${Id}&h=600&apikey=e019e030`
-          ).then((res) => {
-            commit("setEpisodePosterURL", res.config.url);
-          });
-        }
+      commit("settmdbId", input);
+      let IMdbId = await Axios.get(
+        `https://api.themoviedb.org/3/tv/${input}?api_key=59bda62ded2729b78f8c16ed9bfd9896&append_to_response=external_ids `
       );
+      await commit("setEpisodePosterURL", IMdbId.data.poster_path);
+      let showData = await Axios.get(
+        `http://www.omdbapi.com/?i=${IMdbId.data.external_ids.imdb_id}&apikey=e019e030`
+      );
+      await commit("setShowTitle", showData.data.Title);
+      await commit("setShowGenre", showData.data.Genre);
+      await commit("setShowRuntime", showData.data.Runtime);
+      await commit("setShowYear", showData.data.Released);
+      await commit("setShowOverview", showData.data.Plot);
+      let episodeData = await Axios.get(
+        `https://www.omdbapi.com/?i=${IMdbId.data.external_ids.imdb_id}&Season=${this.state.currentSeason}&apikey=e019e030`
+      );
+      await commit("setTotalSeasons", episodeData.data.totalSeasons);
+      let lineChartData = await episodeData.data.Episodes.reduce(
+        (accumulator, episode) => {
+          return { ...accumulator, [episode.Episode]: episode.imdbRating };
+        },
+        {}
+      );
+      await commit("setEpisodeRatings", lineChartData);
     },
     loadSearchResults({ commit }, searchValue) {
       Axios.get(

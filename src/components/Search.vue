@@ -1,21 +1,33 @@
 <template>
-  <div class="h-screen" :class="{ 'bg-gray-900': getColourTheme, 'bg-gray-200': !getColourTheme }">
+  <div
+    class="h-screen"
+    :class="{
+      'bg-gray-900 content-wrapper': getColourTheme,
+      'bg-gray-200 content-wrapper': !getColourTheme,
+    }"
+  >
     <div class="flex flex-wrap w-full justify-center">
       <h1
-        class="w-full text-center mb-10 mt-24"
-        :class="{ 'text-white': getColourTheme, 'text-black': !getColourTheme }"
+        class="w-full text-center mb-10 mt-20"
+        :class="{
+          'text-white content-wrapper': getColourTheme,
+          'text-black content-wrapper': !getColourTheme,
+        }"
       >
         For those who
         <span class="italic font-medium text-xl">really</span> care about TV
         ratings.
       </h1>
-      <div class="relative w-1/2 transition duration-500 transform ease-in-out hover:scale-110">
+      <div class="relative w-1/2 transition duration-500 transform ease-in-out hover:scale-105">
         <div class="relative">
           <input
             type="text"
-            placeholder="Game Of Thrones"
+            placeholder="Game Of Thrones..."
             class="py-4 px-2 w-full rounded-tr-lg rounded-tl-lg focus:outline-none capitalize text-2xl border-b-2 border-gray-200 px-12"
-            :class="{ 'rounded-lg': searchResults <= 0 }"
+            :class="{
+              'rounded-lg': searchResults <= 0,
+              'shadow-xl': !getColourTheme,
+            }"
             v-model="searchValue"
             @input="getSearchResults"
           />
@@ -28,33 +40,34 @@
             />
           </svg>
         </div>
-        <ul class="absolute top-20 right-0 w-full bg-white text-black rounded-br-lg rounded-bl-lg">
-          <li
-            class="mb-2 ml-2 mr-2 mt-4 text-base hover:bg-gray-200 p-2 rounded-lg"
-            v-for="(result) in searchResults"
-            :key="result.id"
-            @click="getSelectedValue(result)"
-          >
-            <div class="flex items-center">
-              <img
-                v-if="result.poster_path === null"
-                src="https://disc5.hdstream.download/assets/lp02/img/no_poster.jpg"
-                alt
-                class="object-fit w-10 h-16 rounded mr-2"
-              />
-              <img
-                :src="'http://image.tmdb.org/t/p/w185' + result.poster_path"
-                alt
-                class="object-fit w-10 h-16 rounded mr-2"
-              />
-              <h1 class="text-xl ml-4" v-show="result.first_air_date !== undefined">
-                {{ result.name }}
-                <span
-                  class="text-xs ml-1 text-gray-700 opactity-75"
-                >{{ result.first_air_date | moment("YYYY") }}</span>
-              </h1>
-            </div>
-          </li>
+        <ul
+          class="absolute top-20 right-0 w-full bg-white text-black rounded-br-lg rounded-bl-lg list-animation"
+        >
+          <router-link to="/chart">
+            <li
+              class="mb-2 ml-2 mr-2 mt-4 text-base hover:bg-gray-200 p-2 rounded-lg"
+              v-for="result in searchResults"
+              :key="result.id"
+              @click="getShowRatings(result)"
+              v-show="result.poster_path !== null"
+            >
+              <div class="flex items-center">
+                <img
+                  :src="'http://image.tmdb.org/t/p/w185' + result.poster_path"
+                  alt
+                  class="object-fit w-10 h-16 rounded mr-2"
+                />
+                <h1 class="text-xl ml-4" v-show="result.first_air_date !== undefined">
+                  {{ result.name }}
+                  <span class="text-xs ml-1 text-gray-700 opactity-75">
+                    {{
+                    result.first_air_date | moment("YYYY")
+                    }}
+                  </span>
+                </h1>
+              </div>
+            </li>
+          </router-link>
         </ul>
       </div>
     </div>
@@ -64,9 +77,6 @@
 <script>
 export default {
   methods: {
-    getShowData() {
-      return this.$store.dispatch("loadData", this.searchValue);
-    },
     getSearchResults() {
       if (this.searchValue === "" || this.searchValue === " ") {
         this.$store.commit("setsearchResults", null);
@@ -74,8 +84,9 @@ export default {
         return this.$store.dispatch("loadSearchResults", this.searchValue);
       }
     },
-    getSelectedValue(result) {
-      console.log(result.id);
+    getShowRatings(result) {
+      this.searchValue = result.name;
+      this.$store.dispatch("loadData", result.id);
     }
   },
   computed: {
